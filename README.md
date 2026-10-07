@@ -16,7 +16,6 @@ Program ini memprediksi apakah seorang karyawan akan berhenti bekerja (_Attritio
 ## Struktur Folder
 
 ```
-.
 ├── README.md
 ├── .gitignore
 ├── Dataset/
