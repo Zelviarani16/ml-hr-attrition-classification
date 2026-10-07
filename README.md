@@ -22,7 +22,7 @@ Program ini memprediksi apakah seorang karyawan akan berhenti bekerja (_Attritio
 ├── Dataset/
 │   └── IBM_HR_Attrition.xlsx
 ├── File Python/
-│   └── uts.py
+│   └── ml.py
 ├── 01_distribusi_attrition.png
 ├── 02_boxplot_deteksi_outlier.png
 ├── 03_boxplot_handling_outlier.png
