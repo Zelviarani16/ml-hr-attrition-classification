@@ -41,9 +41,6 @@ def judul(teks):
     print("=" * 70)
 
 
-# ----------------------------------------------------------------------
-# 3.1 PERSIAPAN LIBRARY
-# ----------------------------------------------------------------------
 judul("PROGRAM KLASIFIKASI IBM HR ATTRITION")
 print("Python           :", sys.version.split()[0])
 print("pandas           :", pd.__version__)
@@ -52,9 +49,7 @@ print("scikit-learn     :", sklearn.__version__)
 print("imbalanced-learn :", imblearn.__version__)
 print("random_state     :", RANDOM_STATE)
 
-# ----------------------------------------------------------------------
-# 3.2 INPUT DATA
-# ----------------------------------------------------------------------
+
 judul("INPUT DATA")
 df = pd.read_excel(dataset_path, sheet_name=0, engine="openpyxl")
 print("Dataset berhasil dibaca.")
@@ -64,9 +59,7 @@ print(df.head())
 print("\nInfo dataset:")
 df.info()
 
-# ----------------------------------------------------------------------
-# 3.3 EKSPLORASI DISTRIBUSI KELAS
-# ----------------------------------------------------------------------
+
 judul("DISTRIBUSI KELAS ATTRITION")
 distribusi = df["Attrition"].value_counts()
 print("Jumlah:")
@@ -91,9 +84,7 @@ plt.tight_layout()
 plt.savefig(out("01_distribusi_attrition.png"), dpi=150)
 plt.close()
 
-# ----------------------------------------------------------------------
-# 3.4 PREPROCESSING (SEBELUM SPLIT)
-# ----------------------------------------------------------------------
+
 judul("DETEKSI MISSING VALUE")
 missing_per_kolom = df.isnull().sum()
 print(missing_per_kolom.to_string())
@@ -119,6 +110,7 @@ if duplikat > 0:
     print("Baris duplikat dihapus. Jumlah baris sekarang:", df.shape[0])
 else:
     print("Tidak ada duplikasi, jumlah data tetap", df.shape[0])
+
 
 judul("DETEKSI OUTLIER (METODE IQR)")
 outlier_columns = [
@@ -161,6 +153,7 @@ plt.tight_layout()
 plt.savefig(out("02_boxplot_deteksi_outlier.png"), dpi=150)
 plt.close()
 
+
 judul("PENGHAPUSAN KOLOM TIDAK RELEVAN DAN ENCODING TARGET")
 print("Shape sebelum drop:", df.shape)
 columns_to_drop = ["EmployeeCount", "Over18", "StandardHours", "EmployeeNumber"]
@@ -172,9 +165,7 @@ df["Attrition"] = df["Attrition"].map({"Yes": 1, "No": 0})
 print("\nEncoding target (Yes = 1, No = 0):")
 print(df["Attrition"].value_counts())
 
-# ----------------------------------------------------------------------
-# 3.5 SPLIT DATA 80:20
-# ----------------------------------------------------------------------
+
 judul("SPLIT DATA 80% TRAINING : 20% TESTING")
 X = df.drop(columns=["Attrition"])
 y = df["Attrition"]
@@ -197,9 +188,7 @@ tabel_split["% Yes"] = (tabel_split["Yes (1)"] / tabel_split["Total"] * 100).rou
 print("\nDistribusi kelas:")
 print(tabel_split)
 
-# ----------------------------------------------------------------------
-# 3.6 HANDLING OUTLIER (BATAS IQR DARI DATA TRAINING)
-# ----------------------------------------------------------------------
+
 judul("HANDLING OUTLIER (CAPPING IQR)")
 bounds = {}
 for kolom in outlier_columns:
@@ -254,9 +243,7 @@ print(hasil_outlier.to_string())
 print("\nJumlah baris training :", X_train.shape[0], "(tidak berkurang)")
 print("Jumlah baris testing  :", X_test.shape[0], "(tidak berkurang)")
 
-# ----------------------------------------------------------------------
-# 3.7 TRANSFORMASI: Z-SCORE (NUMERIK) + ONE-HOT (KATEGORIKAL)
-# ----------------------------------------------------------------------
+
 judul("TRANSFORMASI Z-SCORE DAN ONE-HOT ENCODING")
 categorical_columns = X_train.select_dtypes(include=["object"]).columns.tolist()
 numeric_columns = X_train.select_dtypes(exclude=["object"]).columns.tolist()
@@ -308,9 +295,7 @@ print(sesudah_stat.round(4))
 print("\nContoh 3 baris data training hasil transformasi:")
 print(X_train_transformed.iloc[:3, :6].round(3))
 
-# ----------------------------------------------------------------------
-# 3.8 RESAMPLING (HANYA DATA TRAINING)
-# ----------------------------------------------------------------------
+
 judul("RESAMPLING: ROS DAN SMOTE (HANYA DATA TRAINING)")
 ros = RandomOverSampler(random_state=RANDOM_STATE)
 X_train_ros, y_train_ros = ros.fit_resample(X_train_transformed, y_train)
@@ -349,9 +334,7 @@ plt.tight_layout()
 plt.savefig(out("06_distribusi_kelas_training.png"), dpi=150)
 plt.close()
 
-# ----------------------------------------------------------------------
-# 3.9 TRAINING DECISION TREE
-# ----------------------------------------------------------------------
+
 judul("TRAINING DECISION TREE (3 SKENARIO)")
 parameters = {"criterion": "gini", "max_depth": 5, "random_state": RANDOM_STATE}
 print("Parameter Decision Tree:", parameters)
@@ -371,9 +354,7 @@ for nama, model in models.items():
     print("Model %-8s dilatih dengan %d sampel, kedalaman pohon = %d"
           % (nama, len(y_fit), model.get_depth()))
 
-# ----------------------------------------------------------------------
-# 3.10 TESTING DAN EVALUASI
-# ----------------------------------------------------------------------
+
 judul("TESTING DAN EVALUASI (KELAS POSITIF = ATTRITION YES)")
 
 
@@ -434,7 +415,7 @@ plt.savefig(out("05_perbandingan_metrik.png"), dpi=150)
 plt.close()
 results.to_csv(out("hasil_perbandingan_model.csv"), index=False)
 
-# Pengecekan overfitting
+
 judul("PENGECEKAN OVERFITTING (TRAINING VS TESTING)")
 baris = []
 for nama, model in models.items():
